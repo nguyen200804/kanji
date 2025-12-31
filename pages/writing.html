@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/font.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Luyện viết Kanji</title>
+    <script src="/data-kanji/data-n5.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            margin: 0; background: #f4f7f9; 
+            display: flex; flex-direction: column; align-items: center; 
+            min-height: 100vh; overflow: hidden; padding: 20px;
+        }
+
+        #char-han-title { 
+            font-size: 2.5rem; font-weight: 900; color: #2c3e50; 
+            text-transform: uppercase; margin-bottom: 15px;
+        }
+
+        /* Công cụ điều khiển */
+        .brush-tools {
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 20px; background: white;
+            padding: 10px 20px; border-radius: 50px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .tool-group { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #666; }
+        
+        input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; background: none; }
+        input[type="range"] { accent-color: #f1b34c; width: 80px; }
+
+        /* Nút Undo/Redo nhỏ */
+        .btn-action {
+            background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px;
+            width: 35px; height: 35px; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; font-size: 1.1rem; transition: 0.2s;
+        }
+        .btn-action:hover { background: #e9ecef; }
+        .btn-action:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Container Canvas */
+        .canvas-container { 
+            position: relative; 
+            background: white; 
+            padding: 15px; 
+            border-radius: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        /* Hình nền hướng dẫn nét vẽ */
+        #stroke-guide-bg {
+            position: absolute;
+            top: 15px; left: 15px;
+            width: 320px; height: 320px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 1;
+            transition: opacity 0.3s;
+        }
+
+        canvas { 
+            position: relative; z-index: 2;
+            border: 1px solid #f0f0f0; border-radius: 15px; 
+            touch-action: none; display: block;
+            background: transparent;
+        }
+
+        .toggle-eye {
+            position: absolute; top: 25px; right: 25px;
+            background: white; border: 1px solid #eee; border-radius: 50%;
+            width: 40px; height: 40px; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .bottom-toolbar { margin-top: 25px; display: flex; gap: 15px; }
+        .btn { padding: 12px 35px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .btn-clear { background: #fff; color: #333; border: 1px solid #ddd; }
+        .btn-done { background: #f1b34c; color: white; }
+    </style>
+</head>
+<body>
+
+    <div id="char-han-title">...</div>
+
+    <div class="brush-tools">
+        <div class="tool-group">
+            <input type="color" id="colorPicker" value="#2c3e50">
+        </div>
+        <div class="tool-group">
+            <span>Nét:</span>
+            <input type="range" id="sizePicker" min="5" max="35" value="15">
+        </div>
+        <div class="tool-group" style="border-left: 1px solid #eee; padding-left: 10px;">
+            <button class="btn-action" onclick="undo()" id="undoBtn">↩️</button>
+            <button class="btn-action" onclick="redo()" id="redoBtn">↪️</button>
+        </div>
+    </div>
+
+    <div class="canvas-container">
+        <div class="toggle-eye" onclick="toggleGuide()" id="eyeBtn">👁️</div>
+        <img id="stroke-guide-bg" src="" alt="">
+        <canvas id="writeCanvas" width="320" height="320"></canvas>
+    </div>
+
+    <div class="bottom-toolbar">
+        <button class="btn btn-clear" onclick="clearCanvas()">Xóa bảng</button>
+        <button class="btn btn-done" onclick="history.back()">Hoàn thành</button>
+    </div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const char = urlParams.get('k') || '日';
+    
+    const canvas = document.getElementById('writeCanvas');
+    const ctx = canvas.getContext('2d');
+    const guideImg = document.getElementById('stroke-guide-bg');
+    
+    let isDrawing = false;
+    let showGuide = true;
+
+    // LỊCH SỬ ĐỂ UNDO/REDO
+    let historyStack = [];
+    let redoStack = [];
+
+    function init() {
+        if (typeof kanjiData !== 'undefined' && kanjiData[char]) {
+            document.getElementById('char-han-title').innerText = kanjiData[char].hán;
+        } else {
+            document.getElementById('char-han-title').innerText = char;
+        }
+
+        const unicode = char.charCodeAt(0).toString(16).padStart(5, '0');
+        guideImg.src = `https://raw.githubusercontent.com/KanjiVG/KanjiVG/master/kanji/${unicode}.svg`;
+        
+        drawGrid();
+        saveState(); // Lưu trạng thái trống ban đầu
+    }
+
+    function drawGrid() {
+        ctx.strokeStyle = "#f0f0f0";
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(160, 0); ctx.lineTo(160, 320); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, 160); ctx.lineTo(320, 160); ctx.stroke();
+    }
+
+    // --- LOGIC UNDO / REDO ---
+    function saveState() {
+        historyStack.push(canvas.toDataURL());
+        if (historyStack.length > 30) historyStack.shift();
+        redoStack = []; 
+        updateButtons();
+    }
+
+    function undo() {
+        if (historyStack.length > 1) {
+            redoStack.push(historyStack.pop());
+            const prevState = historyStack[historyStack.length - 1];
+            loadCanvasState(prevState);
+        }
+    }
+
+    function redo() {
+        if (redoStack.length > 0) {
+            const nextState = redoStack.pop();
+            historyStack.push(nextState);
+            loadCanvasState(nextState);
+        }
+    }
+
+    function loadCanvasState(dataURL) {
+        const img = new Image();
+        img.src = dataURL;
+        img.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            drawGrid();
+            updateButtons();
+        };
+    }
+
+    function updateButtons() {
+        document.getElementById('undoBtn').disabled = historyStack.length <= 1;
+        document.getElementById('redoBtn').disabled = redoStack.length === 0;
+    }
+
+    // --- LOGIC VẼ ---
+    function toggleGuide() {
+        showGuide = !showGuide;
+        document.getElementById('eyeBtn').innerText = showGuide ? '👁️' : '🙈';
+        guideImg.style.opacity = showGuide ? "0.15" : "0";
+    }
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDraw(e) {
+        isDrawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        e.preventDefault();
+    }
+
+    function drawing(e) {
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        ctx.lineWidth = document.getElementById('sizePicker').value;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = document.getElementById('colorPicker').value;
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        e.preventDefault();
+    }
+
+    function stopDraw() {
+        if (isDrawing) saveState();
+        isDrawing = false;
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawGrid();
+        historyStack = [];
+        redoStack = [];
+        saveState();
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', drawing);
+    window.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('touchstart', startDraw);
+    canvas.addEventListener('touchmove', drawing, { passive: false });
+    canvas.addEventListener('touchend', stopDraw);
+
+    window.onload = init;
+</script>
+</body>
+</html>

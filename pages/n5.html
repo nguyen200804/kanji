@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/font.css">
+    <title>Kanji N5 - Full Lessons</title>
+    <style>
+        :root {
+            --primary-orange: #f1b34c;
+            --bg-color: #ffffff;
+            --border-color: #e0e0e0;
+            --text-main: #000000;
+            --text-sub: #888888;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-sub);
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #f5f5f5;
+            padding-bottom: 25px;
+        }
+
+        .lesson-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+        }
+
+        .lesson-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
+
+        .kanji-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* Thẻ A đóng vai trò là Card */
+        .kanji-card {
+            width: 70px;
+            height: 70px;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none; /* Bỏ gạch chân của thẻ a */
+            color: inherit;
+        }
+
+        .kanji-card:hover {
+            border-color: var(--primary-orange);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(241, 179, 76, 0.2);
+        }
+
+        .kanji-char {
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="../index.html" class="back-link">← Quay lại danh sách cấp độ</a>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 1</h2>
+        <p class="lesson-subtitle">Kanji made from picture 1 (element)</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=日" class="kanji-card"><div class="kanji-char">日</div></a>
+            <a href="detail.html?k=月" class="kanji-card"><div class="kanji-char">月</div></a>
+            <a href="detail.html?k=金" class="kanji-card"><div class="kanji-char">金</div></a>
+            <a href="detail.html?k=水" class="kanji-card"><div class="kanji-char">水</div></a>
+            <a href="detail.html?k=火" class="kanji-card"><div class="kanji-char">火</div></a>
+            <a href="detail.html?k=木" class="kanji-card"><div class="kanji-char">木</div></a>
+            <a href="detail.html?k=土" class="kanji-card"><div class="kanji-char">土</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 2</h2>
+        <p class="lesson-subtitle">Kanji made from picture 2 (nature)</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=車" class="kanji-card"><div class="kanji-char">車</div></a>
+            <a href="detail.html?k=門" class="kanji-card"><div class="kanji-char">門</div></a>
+            <a href="detail.html?k=田" class="kanji-card"><div class="kanji-char">田</div></a>
+            <a href="detail.html?k=山" class="kanji-card"><div class="kanji-char">山</div></a>
+            <a href="detail.html?k=川" class="kanji-card"><div class="kanji-char">川</div></a>
+            <a href="detail.html?k=雨" class="kanji-card"><div class="kanji-char">雨</div></a>
+            <a href="detail.html?k=天" class="kanji-card"><div class="kanji-char">天</div></a>
+            <a href="detail.html?k=気" class="kanji-card"><div class="kanji-char">気</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 3</h2>
+        <p class="lesson-subtitle">Kanji for human relationships 1</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=父" class="kanji-card"><div class="kanji-char">父</div></a>
+            <a href="detail.html?k=母" class="kanji-card"><div class="kanji-char">母</div></a>
+            <a href="detail.html?k=私" class="kanji-card"><div class="kanji-char">私</div></a>
+            <a href="detail.html?k=兄" class="kanji-card"><div class="kanji-char">兄</div></a>
+            <a href="detail.html?k=姉" class="kanji-card"><div class="kanji-char">姉</div></a>
+            <a href="detail.html?k=弟" class="kanji-card"><div class="kanji-char">弟</div></a>
+            <a href="detail.html?k=妹" class="kanji-card"><div class="kanji-char">妹</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 4</h2>
+        <p class="lesson-subtitle">Numbers</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=一" class="kanji-card"><div class="kanji-char">一</div></a>
+            <a href="detail.html?k=二" class="kanji-card"><div class="kanji-char">二</div></a>
+            <a href="detail.html?k=三" class="kanji-card"><div class="kanji-char">三</div></a>
+            <a href="detail.html?k=四" class="kanji-card"><div class="kanji-char">四</div></a>
+            <a href="detail.html?k=五" class="kanji-card"><div class="kanji-char">五</div></a>
+            <a href="detail.html?k=六" class="kanji-card"><div class="kanji-char">六</div></a>
+            <a href="detail.html?k=七" class="kanji-card"><div class="kanji-char">七</div></a>
+            <a href="detail.html?k=八" class="kanji-card"><div class="kanji-char">八</div></a>
+            <a href="detail.html?k=九" class="kanji-card"><div class="kanji-char">九</div></a>
+            <a href="detail.html?k=十" class="kanji-card"><div class="kanji-char">十</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 5</h2>
+        <p class="lesson-subtitle">Numbers 2</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=百" class="kanji-card"><div class="kanji-char">百</div></a>
+            <a href="detail.html?k=千" class="kanji-card"><div class="kanji-char">千</div></a>
+            <a href="detail.html?k=万" class="kanji-card"><div class="kanji-char">万</div></a>
+            <a href="detail.html?k=円" class="kanji-card"><div class="kanji-char">円</div></a>
+            <a href="detail.html?k=年" class="kanji-card"><div class="kanji-char">年</div></a>
+            <a href="detail.html?k=半" class="kanji-card"><div class="kanji-char">半</div></a>
+            <a href="detail.html?k=分" class="kanji-card"><div class="kanji-char">分</div></a>
+            <a href="detail.html?k=時" class="kanji-card"><div class="kanji-char">時</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 6</h2>
+        <p class="lesson-subtitle">Kanji made from picture 3 (human)</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=人" class="kanji-card"><div class="kanji-char">人</div></a>
+            <a href="detail.html?k=女" class="kanji-card"><div class="kanji-char">女</div></a>
+            <a href="detail.html?k=生" class="kanji-card"><div class="kanji-char">生</div></a>
+            <a href="detail.html?k=子" class="kanji-card"><div class="kanji-char">子</div></a>
+            <a href="detail.html?k=学" class="kanji-card"><div class="kanji-char">学</div></a>
+            <a href="detail.html?k=先" class="kanji-card"><div class="kanji-char">先</div></a>
+            <a href="detail.html?k=白" class="kanji-card"><div class="kanji-char">白</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 7</h2>
+        <p class="lesson-subtitle">Kanji made from picture 4 (body)</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=口" class="kanji-card"><div class="kanji-char">口</div></a>
+            <a href="detail.html?k=石" class="kanji-card"><div class="kanji-char">石</div></a>
+            <a href="detail.html?k=手" class="kanji-card"><div class="kanji-char">手</div></a>
+            <a href="detail.html?k=足" class="kanji-card"><div class="kanji-char">足</div></a>
+            <a href="detail.html?k=耳" class="kanji-card"><div class="kanji-char">耳</div></a>
+            <a href="detail.html?k=目" class="kanji-card"><div class="kanji-char">目</div></a>
+            <a href="detail.html?k=体" class="kanji-card"><div class="kanji-char">体</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 8</h2>
+        <p class="lesson-subtitle">Kanji made from signs</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=上" class="kanji-card"><div class="kanji-char">上</div></a>
+            <a href="detail.html?k=下" class="kanji-card"><div class="kanji-char">下</div></a>
+            <a href="detail.html?k=中" class="kanji-card"><div class="kanji-char">中</div></a>
+            <a href="detail.html?k=大" class="kanji-card"><div class="kanji-char">大</div></a>
+            <a href="detail.html?k=小" class="kanji-card"><div class="kanji-char">小</div></a>
+            <a href="detail.html?k=本" class="kanji-card"><div class="kanji-char">本</div></a>
+            <a href="detail.html?k=力" class="kanji-card"><div class="kanji-char">力</div></a>
+            <a href="detail.html?k=何" class="kanji-card"><div class="kanji-char">何</div></a>
+            <a href="detail.html?k=出" class="kanji-card"><div class="kanji-char">出</div></a>
+            <a href="detail.html?k=入" class="kanji-card"><div class="kanji-char">入</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 9</h2>
+        <p class="lesson-subtitle">Kanji made from a combination of meanings</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=明" class="kanji-card"><div class="kanji-char">明</div></a>
+            <a href="detail.html?k=休" class="kanji-card"><div class="kanji-char">休</div></a>
+            <a href="detail.html?k=好" class="kanji-card"><div class="kanji-char">好</div></a>
+            <a href="detail.html?k=男" class="kanji-card"><div class="kanji-char">男</div></a>
+            <a href="detail.html?k=間" class="kanji-card"><div class="kanji-char">間</div></a>
+            <a href="detail.html?k=岩" class="kanji-card"><div class="kanji-char">岩</div></a>
+            <a href="detail.html?k=畑" class="kanji-card"><div class="kanji-char">畑</div></a>
+            <a href="detail.html?k=森" class="kanji-card"><div class="kanji-char">森</div></a>
+            <a href="detail.html?k=林" class="kanji-card"><div class="kanji-char">林</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 10</h2>
+        <p class="lesson-subtitle">Kanji carrying the meaning of "Position" 1</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=右" class="kanji-card"><div class="kanji-char">右</div></a>
+            <a href="detail.html?k=左" class="kanji-card"><div class="kanji-char">左</div></a>
+            <a href="detail.html?k=東" class="kanji-card"><div class="kanji-char">東</div></a>
+            <a href="detail.html?k=西" class="kanji-card"><div class="kanji-char">西</div></a>
+            <a href="detail.html?k=北" class="kanji-card"><div class="kanji-char">北</div></a>
+            <a href="detail.html?k=南" class="kanji-card"><div class="kanji-char">南</div></a>
+            <a href="detail.html?k=外" class="kanji-card"><div class="kanji-char">外</div></a>
+            <a href="detail.html?k=駅" class="kanji-card"><div class="kanji-char">駅</div></a>
+            <a href="detail.html?k=会" class="kanji-card"><div class="kanji-char">会</div></a>
+            <a href="detail.html?k=内" class="kanji-card"><div class="kanji-char">内</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 11</h2>
+        <p class="lesson-subtitle">Kanji for Adjectives 1</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=長" class="kanji-card"><div class="kanji-char">長</div></a>
+            <a href="detail.html?k=高" class="kanji-card"><div class="kanji-char">高</div></a>
+            <a href="detail.html?k=名" class="kanji-card"><div class="kanji-char">名</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 12</h2>
+        <p class="lesson-subtitle">Kanji for Verbs 1</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=行" class="kanji-card"><div class="kanji-char">行</div></a>
+            <a href="detail.html?k=来" class="kanji-card"><div class="kanji-char">来</div></a>
+            <a href="detail.html?k=食" class="kanji-card"><div class="kanji-char">食</div></a>
+            <a href="detail.html?k=見" class="kanji-card"><div class="kanji-char">見</div></a>
+            <a href="detail.html?k=聞" class="kanji-card"><div class="kanji-char">聞</div></a>
+            <a href="detail.html?k=読" class="kanji-card"><div class="kanji-char">読</div></a>
+            <a href="detail.html?k=書" class="kanji-card"><div class="kanji-char">書</div></a>
+            <a href="detail.html?k=話" class="kanji-card"><div class="kanji-char">話</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 13</h2>
+        <p class="lesson-subtitle">Kanji for Time 1</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=午" class="kanji-card"><div class="kanji-char">午</div></a>
+            <a href="detail.html?k=前" class="kanji-card"><div class="kanji-char">前</div></a>
+            <a href="detail.html?k=後" class="kanji-card"><div class="kanji-char">後</div></a>
+            <a href="detail.html?k=每" class="kanji-card"><div class="kanji-char">每</div></a>
+        </div>
+    </section>
+
+    <section class="lesson-section">
+        <h2 class="lesson-title">Bài 14</h2>
+        <p class="lesson-subtitle">Other common Kanji</p>
+        <div class="kanji-grid">
+            <a href="detail.html?k=校" class="kanji-card"><div class="kanji-char">校</div></a>
+            <a href="detail.html?k=語" class="kanji-card"><div class="kanji-char">語</div></a>
+            <a href="detail.html?k=今" class="kanji-card"><div class="kanji-char">今</div></a>
+            <a href="detail.html?k=電" class="kanji-card"><div class="kanji-char">電</div></a>
+            <a href="detail.html?k=国" class="kanji-card"><div class="kanji-char">国</div></a>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

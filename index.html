@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/font.css">
+    <title>Chọn Cấp Độ Kanji</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Định dạng các ô lựa chọn */
+        .level-card {
+            display: block;
+            text-decoration: none; /* Bỏ gạch chân của thẻ a */
+            background-color: white;
+            color: #2c3e50;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        /* Hiệu ứng khi di chuột vào (Hover) */
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* Màu sắc riêng cho từng cấp độ để dễ phân biệt (Tùy chọn) */
+        .n5 { border-left: 8px solid #2ecc71; }
+        .n4 { border-left: 8px solid #3498db; }
+        .n3 { border-left: 8px solid #f1c40f; }
+        .n2 { border-left: 8px solid #e67e22; }
+        .n1 { border-left: 8px solid #e74c3c; }
+
+    </style>
+</head>
+<body>
+
+    <h2>Chọn cấp độ Kanji</h2>
+
+    <div class="menu-container">
+        <a href="pages/n5.html" class="level-card n5">Kanji N5</a>
+        <a href="pages/n4.html" class="level-card n4">Kanji N4</a>
+        <a href="pages/n3.html" class="level-card n3">Kanji N3</a>
+        <a href="pages/n2.html" class="level-card n2">Kanji N2</a>
+        <a href="pages/n1.html" class="level-card n1">Kanji N1</a>
+    </div>
+
+</body>
+</html>

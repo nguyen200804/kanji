@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/font.css">
+    <title>Chi tiết Kanji N5</title>
+    <script src="/data-kanji/data-n5.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f9f9f9; color: #333; }
+        .container { max-width: 500px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .back-btn { display: inline-block; margin-bottom: 20px; color: #f1b34c; text-decoration: none; font-weight: bold; }
+        .header { display: flex; align-items: center; gap: 25px; margin-bottom: 30px; }
+        .big-char { font-size: 80px; width: 120px; height: 120px; border: 3px solid #f1b34c; display: flex; align-items: center; justify-content: center; border-radius: 15px; background: #fffcf5; }
+        
+        /* Nhóm 2 nút bấm điều hướng */
+        .action-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .btn-action { flex: 1; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: white; text-decoration: none; }
+        .btn-practice { background: #5db9ff; } /* Màu xanh cho trang hướng dẫn */
+        .btn-writing { background: #f1b34c; }  /* Màu vàng cho trang tập viết */
+        .btn-action:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .kanji-name h1 { margin: 0; font-size: 1.8rem; color: #000; }
+        .info-row { display: flex; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .info-label { width: 100px; font-weight: bold; color: #888; font-size: 0.8rem; text-transform: uppercase; }
+        .kana-text { font-size: 1.2rem; color: #d35400; font-weight: 500; }
+        .example-box { margin-top: 25px; background: #fffcf5; padding: 20px; border-radius: 12px; border-left: 5px solid #f1b34c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="n5.html" class="back-btn">← Quay lại danh sách</a>
+    
+    <div id="content"></div>
+
+    <div class="action-group">
+        <button class="btn-action btn-practice" onclick="goToPage('practice.html')">📖 Hướng dẫn viết</button>
+        <button class="btn-action btn-writing" onclick="goToPage('writing.html')">✍️ Luyện viết</button>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const char = urlParams.get('k');
+
+    if (char && kanjiData[char]) {
+        const data = kanjiData[char];
+        document.getElementById('content').innerHTML = `
+            <div class="header">
+                <div class="big-char">${char}</div>
+                <div class="kanji-name">
+                    <h1>${data.hán}</h1>
+                    <p>${data.nghĩa}</p>
+                </div>
+            </div>
+            <div class="info-section">
+                <div class="info-row"><div class="info-label">Onyomi</div><div class="kana-text">${data.on}</div></div>
+                <div class="info-row"><div class="info-label">Kunyomi</div><div class="kana-text">${data.kun}</div></div>
+            </div>
+        `;
+    }
+
+    function goToPage(page) {
+        if (char) {
+            window.location.href = `${page}?k=${encodeURIComponent(char)}`;
+        }
+    }
+</script>
+</body>
+</html>
