@@ -2,245 +2,170 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/font.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Luyện viết Kanji</title>
-    <script src="/data-kanji/data-n5.js"></script>
+    <link rel="stylesheet" href="../css/font.css">
+    <script src="../data-kanji/data-n5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; background: #f4f7f9; 
-            display: flex; flex-direction: column; align-items: center; 
-            min-height: 100vh; overflow: hidden; padding: 20px;
+            margin: 0; background: #f4f7f9; display: flex; flex-direction: column; 
+            align-items: center; min-height: 100vh; font-family: 'Quicksand', sans-serif; padding: 20px;
         }
 
-        #char-han-title { 
-            font-size: 2.5rem; font-weight: 900; color: #2c3e50; 
-            text-transform: uppercase; margin-bottom: 15px;
+        /* Nút Thoát */
+        .btn-exit {
+            position: absolute; top: 20px; left: 20px;
+            background: white; border: 1px solid #ddd; padding: 8px 15px;
+            border-radius: 10px; text-decoration: none; color: #666;
+            font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;
+            transition: all 0.2s; z-index: 100;
         }
+        .btn-exit:hover { background: #fff0f0; color: #e74c3c; border-color: #fab1a0; }
 
-        /* Công cụ điều khiển */
-        .brush-tools {
-            display: flex; align-items: center; gap: 15px;
-            margin-bottom: 20px; background: white;
-            padding: 10px 20px; border-radius: 50px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .tool-group { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #666; }
+        #char-han-title { font-size: 2.2rem; font-weight: 700; color: #2c3e50; margin-top: 40px; margin-bottom: 5px; }
         
-        input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; background: none; }
-        input[type="range"] { accent-color: #f1b34c; width: 80px; }
-
-        /* Nút Undo/Redo nhỏ */
-        .btn-action {
-            background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px;
-            width: 35px; height: 35px; display: flex; align-items: center;
-            justify-content: center; cursor: pointer; font-size: 1.1rem; transition: 0.2s;
+        /* Thanh tiến trình mới */
+        .progress-wrapper {
+            width: 100%; max-width: 320px; margin-bottom: 20px; text-align: center;
         }
-        .btn-action:hover { background: #e9ecef; }
-        .btn-action:disabled { opacity: 0.3; cursor: not-allowed; }
+        .progress-container {
+            width: 100%; height: 12px; background: #e0e6ed; border-radius: 10px;
+            overflow: hidden; margin-top: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .progress-bar {
+            width: 10%; height: 100%; background: linear-gradient(90deg, #edbb68, #f39c12);
+            border-radius: 10px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mode-label { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Container Canvas */
         .canvas-container { 
-            position: relative; 
-            background: white; 
-            padding: 15px; 
-            border-radius: 25px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative; background: white; padding: 15px; border-radius: 30px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
         }
+        #kanji-target { width: 320px; height: 320px; }
         
-        /* Hình nền hướng dẫn nét vẽ */
-        #stroke-guide-bg {
-            position: absolute;
-            top: 15px; left: 15px;
-            width: 320px; height: 320px;
-            opacity: 0.15;
-            pointer-events: none;
-            z-index: 1;
-            transition: opacity 0.3s;
-        }
-
-        canvas { 
-            position: relative; z-index: 2;
-            border: 1px solid #f0f0f0; border-radius: 15px; 
-            touch-action: none; display: block;
-            background: transparent;
-        }
-
-        .toggle-eye {
-            position: absolute; top: 25px; right: 25px;
-            background: white; border: 1px solid #eee; border-radius: 50%;
-            width: 40px; height: 40px; display: flex; align-items: center;
-            justify-content: center; cursor: pointer; z-index: 10;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .bottom-toolbar { margin-top: 25px; display: flex; gap: 15px; }
-        .btn { padding: 12px 35px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s; }
-        .btn-clear { background: #fff; color: #333; border: 1px solid #ddd; }
-        .btn-done { background: #f1b34c; color: white; }
+        .bottom-toolbar { margin-top: 30px; display: flex; gap: 15px; }
+        .btn { padding: 12px 35px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-family: 'Quicksand'; transition: 0.3s; min-width: 140px; }
+        .btn-clear { background: #fff; color: #555; border: 1px solid #ddd; }
+        .btn-next { background: #edbb68; color: white; box-shadow: 0 4px 15px rgba(237, 187, 104, 0.4); }
+        .btn-next:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; box-shadow: none; }
+        
+        .success-msg { color: #27ae60; font-weight: 700; opacity: 0; transition: 0.3s; margin-top: 15px; }
+        .success-msg.show { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div id="char-han-title">...</div>
+    <a href="#" onclick="confirmExit()" class="btn-exit">✕ Thoát</a>
 
-    <div class="brush-tools">
-        <div class="tool-group">
-            <input type="color" id="colorPicker" value="#2c3e50">
+    <div id="char-han-title">...</div>
+    
+    <div class="progress-wrapper">
+        <div id="mode-text" class="mode-label">Đang hiện mẫu</div>
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
         </div>
-        <div class="tool-group">
-            <span>Nét:</span>
-            <input type="range" id="sizePicker" min="5" max="35" value="15">
-        </div>
-        <div class="tool-group" style="border-left: 1px solid #eee; padding-left: 10px;">
-            <button class="btn-action" onclick="undo()" id="undoBtn">↩️</button>
-            <button class="btn-action" onclick="redo()" id="redoBtn">↪️</button>
+        <div style="font-size: 0.8rem; margin-top: 5px; color: #94a3b8; font-weight: 600;">
+            Tiến độ: <span id="progress-text">1</span>/10
         </div>
     </div>
 
     <div class="canvas-container">
-        <div class="toggle-eye" onclick="toggleGuide()" id="eyeBtn">👁️</div>
-        <img id="stroke-guide-bg" src="" alt="">
-        <canvas id="writeCanvas" width="320" height="320"></canvas>
+        <div id="kanji-target"></div>
     </div>
 
+    <div id="finish-msg" class="success-msg">🎉 Xuất sắc! Bạn đã thuộc chữ này.</div>
+
     <div class="bottom-toolbar">
-        <button class="btn btn-clear" onclick="clearCanvas()">Xóa bảng</button>
-        <button class="btn btn-done" onclick="history.back()">Hoàn thành</button>
+        <button class="btn btn-clear" id="resetBtn">Viết lại</button>
+        <button class="btn btn-next" id="nextBtn" disabled>Tiếp tục</button>
     </div>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const char = urlParams.get('k') || '日';
-    
-    const canvas = document.getElementById('writeCanvas');
-    const ctx = canvas.getContext('2d');
-    const guideImg = document.getElementById('stroke-guide-bg');
-    
-    let isDrawing = false;
-    let showGuide = true;
+    const char = urlParams.get('k') || '気';
+    let writeCount = 1;
+    const maxWrites = 10;
 
-    // LỊCH SỬ ĐỂ UNDO/REDO
-    let historyStack = [];
-    let redoStack = [];
+    const nextBtn = document.getElementById('nextBtn');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const modeTextDisplay = document.getElementById('mode-text');
 
-    function init() {
-        if (typeof kanjiData !== 'undefined' && kanjiData[char]) {
-            document.getElementById('char-han-title').innerText = kanjiData[char].hán;
-        } else {
-            document.getElementById('char-han-title').innerText = char;
+    if (typeof kanjiData !== 'undefined' && kanjiData[char]) {
+        document.getElementById('char-han-title').innerText = kanjiData[char].hán;
+    }
+
+    function confirmExit() {
+        if (writeCount < maxWrites && confirm("Bạn chưa hoàn thành luyện tập. Bạn có chắc muốn thoát không?")) {
+            history.back();
+        } else if (writeCount >= maxWrites) {
+            history.back();
         }
+    }
 
-        const unicode = char.charCodeAt(0).toString(16).padStart(5, '0');
-        guideImg.src = `https://raw.githubusercontent.com/KanjiVG/KanjiVG/master/kanji/${unicode}.svg`;
+    const writer = HanziWriter.create('kanji-target', char, {
+        width: 320, height: 320, padding: 25,
+        strokeColor: '#2c3e50', drawingColor: '#edbb68', drawingWidth: 15,
+        charDataLoader: function(char, onComplete) {
+            fetch(`https://raw.githubusercontent.com/chanind/hanzi-writer-data-jp/master/data/${char}.json`)
+                .then(res => res.ok ? res.json() : Promise.reject())
+                .then(onComplete)
+                .catch(() => {
+                    fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/${char}.json`)
+                        .then(res => res.json()).then(onComplete);
+                });
+        }
+    });
+
+    function setupQuiz() {
+        // Cập nhật thanh tiến trình
+        const percentage = (writeCount / maxWrites) * 100;
+        progressBar.style.width = percentage + "%";
+        progressText.innerText = writeCount;
         
-        drawGrid();
-        saveState(); // Lưu trạng thái trống ban đầu
-    }
-
-    function drawGrid() {
-        ctx.strokeStyle = "#f0f0f0";
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(160, 0); ctx.lineTo(160, 320); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(0, 160); ctx.lineTo(320, 160); ctx.stroke();
-    }
-
-    // --- LOGIC UNDO / REDO ---
-    function saveState() {
-        historyStack.push(canvas.toDataURL());
-        if (historyStack.length > 30) historyStack.shift();
-        redoStack = []; 
-        updateButtons();
-    }
-
-    function undo() {
-        if (historyStack.length > 1) {
-            redoStack.push(historyStack.pop());
-            const prevState = historyStack[historyStack.length - 1];
-            loadCanvasState(prevState);
+        nextBtn.disabled = true;
+        
+        if (writeCount <= 5) {
+            modeTextDisplay.innerText = "Chế độ: Đồ theo mẫu";
+            modeTextDisplay.style.color = "#edbb68";
+            writer.updateColor('outlineColor', '#f0f0f0');
+            writer.showOutline();
+        } else {
+            modeTextDisplay.innerText = "Chế độ: Tự nhớ nét";
+            modeTextDisplay.style.color = "#e74c3c";
+            writer.hideOutline();
         }
+
+        writer.quiz({
+            onComplete: function() {
+                nextBtn.disabled = false;
+                if (writeCount === maxWrites) {
+                    nextBtn.innerText = "Hoàn thành";
+                    document.getElementById('finish-msg').classList.add('show');
+                } else {
+                    nextBtn.innerText = "Tiếp tục";
+                }
+            }
+        });
     }
 
-    function redo() {
-        if (redoStack.length > 0) {
-            const nextState = redoStack.pop();
-            historyStack.push(nextState);
-            loadCanvasState(nextState);
+    nextBtn.addEventListener('click', () => {
+        if (writeCount < maxWrites) {
+            writeCount++;
+            setupQuiz();
+        } else {
+            history.back();
         }
-    }
+    });
 
-    function loadCanvasState(dataURL) {
-        const img = new Image();
-        img.src = dataURL;
-        img.onload = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-            drawGrid();
-            updateButtons();
-        };
-    }
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        writer.quiz();
+        nextBtn.disabled = true;
+    });
 
-    function updateButtons() {
-        document.getElementById('undoBtn').disabled = historyStack.length <= 1;
-        document.getElementById('redoBtn').disabled = redoStack.length === 0;
-    }
-
-    // --- LOGIC VẼ ---
-    function toggleGuide() {
-        showGuide = !showGuide;
-        document.getElementById('eyeBtn').innerText = showGuide ? '👁️' : '🙈';
-        guideImg.style.opacity = showGuide ? "0.15" : "0";
-    }
-
-    function getPos(e) {
-        const rect = canvas.getBoundingClientRect();
-        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        let clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: clientX - rect.left, y: clientY - rect.top };
-    }
-
-    function startDraw(e) {
-        isDrawing = true;
-        const pos = getPos(e);
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-        e.preventDefault();
-    }
-
-    function drawing(e) {
-        if (!isDrawing) return;
-        const pos = getPos(e);
-        ctx.lineWidth = document.getElementById('sizePicker').value;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.strokeStyle = document.getElementById('colorPicker').value;
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-        e.preventDefault();
-    }
-
-    function stopDraw() {
-        if (isDrawing) saveState();
-        isDrawing = false;
-    }
-
-    function clearCanvas() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawGrid();
-        historyStack = [];
-        redoStack = [];
-        saveState();
-    }
-
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', drawing);
-    window.addEventListener('mouseup', stopDraw);
-    canvas.addEventListener('touchstart', startDraw);
-    canvas.addEventListener('touchmove', drawing, { passive: false });
-    canvas.addEventListener('touchend', stopDraw);
-
-    window.onload = init;
+    window.onload = setupQuiz;
 </script>
 </body>
 </html>

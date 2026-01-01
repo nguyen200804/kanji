@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thử thách Trí nhớ Kanji N5</title>
+    <link rel="stylesheet" href="../css/font.css">
+    <script src="../data-kanji/data-n5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <style>
+        :root {
+            --primary-orange: #f1b34c;
+            --bg-color: #f4f7f9;
+            --text-main: #2c3e50;
+        }
+
+        body { 
+            margin: 0; 
+            background: var(--bg-color); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            font-family: 'Quicksand', sans-serif; 
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Nút thoát */
+        .btn-exit { 
+            position: absolute; 
+            top: 20px; 
+            left: 20px; 
+            text-decoration: none; 
+            color: #666; 
+            font-weight: 700;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .btn-exit:hover { background: #eee; }
+
+        .header-info { text-align: center; margin-top: 50px; }
+        
+        #lesson-name { 
+            color: var(--primary-orange); 
+            font-weight: 800; 
+            font-size: 0.9rem;
+            background: #fff3e0;
+            padding: 6px 18px;
+            border-radius: 20px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+
+        #char-han-title { 
+            font-size: 3rem; 
+            font-weight: 800; 
+            color: var(--text-main); 
+            margin: 15px 0 5px 0;
+        }
+        
+        #step-info { font-size: 1rem; color: #888; font-weight: 600; margin-bottom: 20px; }
+
+        /* Progress Bar */
+        .progress-wrapper { width: 100%; max-width: 320px; margin-bottom: 30px; }
+        .progress-container { width: 100%; height: 10px; background: #e0e6ed; border-radius: 10px; overflow: hidden; }
+        .progress-bar { width: 0%; height: 100%; background: var(--primary-orange); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        /* Khung Canvas */
+        .canvas-container { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 40px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.07); 
+            position: relative;
+        }
+        
+        #kanji-target { width: 300px; height: 300px; }
+        
+        /* Gợi ý & Trạng thái */
+        .status-msg { margin-top: 30px; color: #95a5a6; font-weight: 600; font-size: 1rem; text-align: center; }
+        
+        .hint-btn {
+            margin-top: 15px;
+            background: none;
+            border: 1px dashed var(--primary-orange);
+            color: var(--primary-orange);
+            padding: 5px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Quicksand';
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="javascript:void(0)" id="exit-link" class="btn-exit">✕ Thoát</a>
+
+    <div class="header-info">
+        <div id="lesson-name">ĐANG CHUẨN BỊ...</div>
+        <div id="char-han-title">---</div>
+        <div id="step-info">Chữ 0/0</div>
+    </div>
+
+    <div class="progress-wrapper">
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+    </div>
+
+    <div class="canvas-container">
+        <div id="kanji-target"></div>
+    </div>
+
+    <div class="status-msg" id="status-msg">Hãy viết theo trí nhớ của bạn</div>
+    <button class="hint-btn" onclick="showHint()">Xem gợi ý (2 giây)</button>
+
+<script>
+    const lessons = {
+        "1": { chars: ['日', '月', '金', '水', '火', '木', '土'] },
+        "2": { chars: ['車', '門', '田', '山', '川', '雨', '天', '気'] },
+        "3": { chars: ['父', '母', '私', '兄', '姉', '弟', '妹'] },
+        "4": { chars: ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'] },
+        "5": { chars: ['百', '千', '万', '円', '年', '半', '分', '時'] },
+        "6": { chars: ['人', '女', '生', '子', '学', '先', '白'] },
+        "7": { chars: ['口', '石', '手', '足', '耳', '目', '体'] },
+        "8": { chars: ['上', '下', '中', '大', '小', '本', '力', '何', '出', '入'] },
+        "9": { chars: ['明', '休', '好', '男', '間', '岩', '畑', '森', '林'] },
+        "10": { chars: ['右', '左', '東', '西', '北', '南', '外', '駅', '会', '内'] },
+        "11": { chars: ['長', '高', '名'] },
+        "12": { chars: ['行', '来', '食', '見', '聞', '読', '書', '話'] },
+        "13": { chars: ['午', '前', '後', '每'] },
+        "14": { chars: ['校', '語', '今', '電', '国'] }
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const lessonId = urlParams.get('lesson') || "1";
+    
+    // Đảo lộn thứ tự danh sách chữ ngay từ đầu
+    let charList = lessons[lessonId] ? [...lessons[lessonId].chars].sort(() => Math.random() - 0.5) : [];
+    
+    let currentIndex = 0;
+    let writer;
+
+    function initWriter(char) {
+        document.getElementById('kanji-target').innerHTML = '';
+        document.getElementById('lesson-name').innerText = `ÔN TẬP BÀI ${lessonId} (NGẪU NHIÊN)`;
+        document.getElementById('step-info').innerText = `Chữ ${currentIndex + 1} / ${charList.length}`;
+        
+        // Lấy Hán Việt
+        const hanViet = (typeof kanjiData !== 'undefined' && kanjiData[char]) ? kanjiData[char].hán : "KANJI";
+        document.getElementById('char-han-title').innerText = hanViet;
+
+        // Cập nhật thanh tiến trình
+        const progressPercent = (currentIndex / charList.length) * 100;
+        document.getElementById('progress-bar').style.width = progressPercent + "%";
+
+        // Khởi tạo HanziWriter chế độ ẨN
+        writer = HanziWriter.create('kanji-target', char, {
+            width: 300,
+            height: 300,
+            padding: 30,
+            strokeColor: '#2c3e50',
+            drawingColor: '#f1b34c',
+            drawingWidth: 20,
+            showOutline: false,    // Ẩn nét mờ
+            showCharacter: false,  // Ẩn chữ lúc đầu
+            charDataLoader: function(char, onComplete) {
+                fetch(`https://raw.githubusercontent.com/chanind/hanzi-writer-data-jp/master/data/${char}.json`)
+                    .then(res => res.json()).then(onComplete);
+            }
+        });
+
+        writer.quiz({
+            onComplete: function() {
+                currentIndex++;
+                document.getElementById('status-msg').innerText = "Chính xác! Đang chuẩn bị chữ tiếp theo...";
+                document.getElementById('status-msg').style.color = "#2ecc71";
+                
+                if (currentIndex < charList.length) {
+                    setTimeout(() => {
+                        document.getElementById('status-msg').innerText = "Hãy viết theo trí nhớ của bạn";
+                        document.getElementById('status-msg').style.color = "#95a5a6";
+                        initWriter(charList[currentIndex]);
+                    }, 1200);
+                } else {
+                    document.getElementById('progress-bar').style.width = "100%";
+                    setTimeout(() => {
+                        alert("🎉 Chúc mừng! Bạn đã chinh phục tất cả các chữ trong bài này.");
+                        window.location.href = `review.html?lesson=${lessonId}`;
+                    }, 500);
+                }
+            }
+        });
+    }
+
+    function showHint() {
+        if(writer) {
+            writer.showOutline();
+            setTimeout(() => writer.hideOutline(), 2000);
+        }
+    }
+
+    window.onload = () => {
+        if (charList.length > 0) {
+            initWriter(charList[currentIndex]);
+            document.getElementById('exit-link').onclick = () => {
+                if(confirm("Bạn muốn dừng ôn tập?")) window.location.href = `review.html?lesson=${lessonId}`;
+            };
+        }
+    };
+</script>
+</body>
+</html>

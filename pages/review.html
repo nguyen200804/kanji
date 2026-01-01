@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/font.css">
+    <script src="../data-kanji/data-n5.js"></script>
+    <title>Ôn tập bài học</title>
+    <style>
+        :root { --primary-orange: #f1b34c; --bg: #f4f7f9; }
+        body { font-family: 'Quicksand', sans-serif; background: var(--bg); margin: 0; padding: 20px; text-align: center; }
+        .lesson-tag { background: var(--primary-orange); color: white; padding: 6px 20px; border-radius: 20px; font-weight: 700; display: inline-block; margin-top: 20px; }
+        h1 { margin: 15px 0; color: #2c3e50; }
+        .btn-all { background: linear-gradient(135deg, #f1b34c, #e67e22); color: white; border: none; padding: 15px 30px; border-radius: 15px; font-weight: 700; cursor: pointer; margin-bottom: 40px; box-shadow: 0 4px 15px rgba(241,179,76,0.3); font-family: 'Quicksand'; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 20px; max-width: 800px; margin: 0 auto; }
+        .card { background: white; border-radius: 25px; padding: 25px; text-decoration: none; color: inherit; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; border: 2px solid transparent; }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary-orange); }
+        .kanji { font-size: 2.8rem; font-weight: 700; display: block; margin-bottom: 10px; }
+        .hán { font-size: 0.9rem; color: #888; font-weight: 700; text-transform: uppercase; }
+        .back { display: block; margin-top: 50px; color: #888; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div id="lesson-tag" class="lesson-tag">BÀI ...</div>
+    <h1 id="lesson-title">Đang tải...</h1>
+    <p style="color: #888; margin-bottom: 25px;">Chọn một chữ để xem chi tiết hoặc ôn tập toàn bộ bài</p>
+    <button id="btn-review-all" class="btn-all">🔥 Ôn tập tất cả các chữ (Random)</button>
+    <div class="grid" id="kanji-list"></div>
+    <a href="n5.html" class="back">← Quay lại danh sách bài học</a>
+
+<script>
+    const lessons = { /* Chép toàn bộ mảng lessons 14 bài từ file n5.html vào đây */ 
+        "1": { title: "Yếu tố tự nhiên", chars: ['日', '月', '金', '水', '火', '木', '土'] },
+        "2": { title: "Thiên nhiên & Thời tiết", chars: ['車', '門', '田', '山', '川', '雨', '天', '気'] },
+        "3": { title: "Gia đình & Bản thân", chars: ['父', '母', '私', '兄', '姉', '弟', '妹'] },
+        "4": { title: "Số đếm cơ bản (1-10)", chars: ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'] },
+        "5": { title: "Thời gian & Đơn vị", chars: ['百', '千', '万', '円', '年', '半', '分', '時'] },
+        "6": { title: "Con người & Trường học", chars: ['人', '女', '生', '子', '学', '先', '白'] },
+        "7": { title: "Bộ phận cơ thể", chars: ['口', '石', '手', '足', '耳', '目', '体'] },
+        "8": { title: "Ký hiệu & Kích thước", chars: ['上', '下', '中', '大', '小', '本', '力', '何', '出', '入'] },
+        "9": { title: "Kết hợp ý nghĩa", chars: ['明', '休', '好', '男', '間', '岩', '畑', '森', '林'] },
+        "10": { title: "Phương hướng", chars: ['右', '左', '東', '西', '北', '南', '外', '駅', '会', '内'] },
+        "11": { title: "Tính từ cơ bản", chars: ['長', '高', '名'] },
+        "12": { title: "Động từ hành động", chars: ['行', '来', '食', '見', '聞', '読', '書', '話'] },
+        "13": { title: "Trạng thái thời gian", chars: ['午', '前', '後', '毎'] },
+        "14": { title: "Thông dụng khác", chars: ['校', '語', '今', '電', '国'] }
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const lessonId = urlParams.get('lesson') || "1";
+    const lesson = lessons[lessonId];
+
+    if (lesson) {
+        document.getElementById('lesson-tag').innerText = `BÀI ${lessonId}`;
+        document.getElementById('lesson-title').innerText = lesson.title;
+        document.getElementById('btn-review-all').onclick = () => window.location.href = `review-all.html?lesson=${lessonId}`;
+
+        const list = document.getElementById('kanji-list');
+        lesson.chars.forEach(c => {
+            const hán = (typeof kanjiData !== 'undefined' && kanjiData[c]) ? kanjiData[c].hán : "KANJI";
+            list.innerHTML += `
+                <a href="detail.html?k=${encodeURIComponent(c)}" class="card">
+                    <span class="kanji">${c}</span>
+                    <span class="hán">${hán}</span>
+                </a>`;
+        });
+    }
+</script>
+</body>
+</html>

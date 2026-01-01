@@ -2,32 +2,73 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/font.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hướng dẫn viết</title>
+    <title>Cách viết Kanji</title>
+    <link rel="stylesheet" href="../css/font.css">
+    <script src="../data-kanji/data-n5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background: #f0f8ff; }
-        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; }
-        #stroke-img { width: 300px; height: 300px; background: #fff; border: 1px solid #eee; }
-        .back-btn { margin-top: 20px; text-decoration: none; color: #5db9ff; font-weight: bold; }
+        body {
+            margin: 0; background-color: #f4f7f9;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .container {
+            background: white; padding: 30px; border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); text-align: center;
+            width: 90%; max-width: 450px;
+        }
+        #kanji-animate {
+            width: 250px; height: 250px; margin: 20px auto;
+            background: #fff; border: 1px solid #f0f0f0; border-radius: 20px;
+        }
+        .btn {
+            width: 100%; padding: 14px; border-radius: 12px; border: none;
+            font-weight: 700; cursor: pointer; font-size: 1rem; margin-top: 10px;
+            transition: 0.3s; font-family: 'Quicksand', sans-serif;
+            box-sizing:border-box;
+        }
+        .btn-play { background: #edbb68; color: white; }
+        .btn-back { background: #f8f9fa; color: #666; border: 1px solid #ddd; text-decoration: none; display: block; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2 id="title">Hướng dẫn nét vẽ</h2>
-        <img id="stroke-img" src="" alt="Stroke order animation">
-        <br>
-        <a href="#" onclick="history.back()" class="back-btn">← Quay lại chi tiết</a>
+    <div class="container">
+        <h1 id="title-name" style="font-size: 1.8rem; color: #2c3e50;">Cách viết chữ</h1>
+        <div id="kanji-animate"></div>
+        <div class="controls">
+            <button class="btn btn-play" onclick="animateKanji()">Xem minh họa</button>
+            <a href="#" onclick="history.back()" class="btn btn-back">Quay lại chi tiết</a>
+        </div>
     </div>
 
     <script>
-        const char = new URLSearchParams(window.location.search).get('k');
-        if (char) {
-            document.getElementById('title').innerText = `Cách viết chữ: ${char}`;
-            const unicode = char.charCodeAt(0).toString(16).padStart(5, '0');
-            // Link lấy ảnh SVG từ thư viện KanjiVG
-            document.getElementById('stroke-img').src = `https://raw.githubusercontent.com/KanjiVG/KanjiVG/master/kanji/${unicode}.svg`;
+        const urlParams = new URLSearchParams(window.location.search);
+        const char = urlParams.get('k') || '気';
+
+        if (typeof kanjiData !== 'undefined' && kanjiData[char]) {
+            document.getElementById('title-name').innerText = `Cách viết chữ: ${kanjiData[char].hán}`;
         }
+
+        // BỘ NẠP DỮ LIỆU THÔNG MINH (Sửa lỗi mất mẫu chữ KHÍ)
+        const writer = HanziWriter.create('kanji-animate', char, {
+            width: 250, height: 250, padding: 20,
+            strokeColor: '#2c3e50', outlineColor: '#f0f0f0', showOutline: true,
+            charDataLoader: function(char, onComplete) {
+                // Thử tải dữ liệu từ kho Kanji Nhật Bản trước
+                fetch(`https://raw.githubusercontent.com/chanind/hanzi-writer-data-jp/master/data/${char}.json`)
+                    .then(res => res.ok ? res.json() : Promise.reject())
+                    .then(onComplete)
+                    .catch(() => {
+                        // Nếu không có, dùng kho dữ liệu mặc định
+                        fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/${char}.json`)
+                            .then(res => res.json()).then(onComplete);
+                    });
+            }
+        });
+
+        function animateKanji() { writer.animateCharacter(); }
+        window.onload = () => setTimeout(animateKanji, 500);
     </script>
 </body>
 </html>

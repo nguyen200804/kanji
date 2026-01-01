@@ -3,49 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="../css/font.css">
     <title>Chi tiết Kanji N5</title>
-    <script src="/data-kanji/data-n5.js"></script>
+    <script src="../data-kanji/data-n5.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f9f9f9; color: #333; }
-        .container { max-width: 500px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .back-btn { display: inline-block; margin-bottom: 20px; color: #f1b34c; text-decoration: none; font-weight: bold; }
-        .header { display: flex; align-items: center; gap: 25px; margin-bottom: 30px; }
-        .big-char { font-size: 80px; width: 120px; height: 120px; border: 3px solid #f1b34c; display: flex; align-items: center; justify-content: center; border-radius: 15px; background: #fffcf5; }
-        
-        /* Nhóm 2 nút bấm điều hướng */
-        .action-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        .btn-action { flex: 1; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: white; text-decoration: none; }
-        .btn-practice { background: #5db9ff; } /* Màu xanh cho trang hướng dẫn */
-        .btn-writing { background: #f1b34c; }  /* Màu vàng cho trang tập viết */
-        .btn-action:hover { opacity: 0.9; transform: translateY(-2px); }
+        :root {
+            --primary-orange: #f1b34c;
+            --secondary-blue: #5db9ff;
+            --bg-color: #f9f9f9;
+            --text-dark: #2c3e50;
+        }
 
-        .kanji-name h1 { margin: 0; font-size: 1.8rem; color: #000; }
-        .info-row { display: flex; padding: 15px 0; border-bottom: 1px solid #eee; }
-        .info-label { width: 100px; font-weight: bold; color: #888; font-size: 0.8rem; text-transform: uppercase; }
-        .kana-text { font-size: 1.2rem; color: #d35400; font-weight: 500; }
-        .example-box { margin-top: 25px; background: #fffcf5; padding: 20px; border-radius: 12px; border-left: 5px solid #f1b34c; }
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            margin: 0; padding: 20px; 
+            background: var(--bg-color); 
+            color: var(--text-dark); 
+        }
+
+        .container { 
+            max-width: 500px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 30px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05); 
+        }
+
+        .back-btn { 
+            display: inline-block; 
+            margin-bottom: 25px; 
+            color: #95a5a6; 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 0.9rem;
+        }
+
+        /* Header hiển thị chữ lớn */
+        .header { 
+            display: flex; 
+            align-items: center; 
+            gap: 25px; 
+            margin-bottom: 35px; 
+        }
+
+        .big-char { 
+            font-size: 75px; 
+            width: 130px; 
+            height: 130px; 
+            border: 3px solid var(--primary-orange); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 25px; 
+            background: #fffcf5; 
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .kanji-name h1 { 
+            margin: 0; 
+            font-size: 2rem; 
+            color: var(--text-dark); 
+            text-transform: uppercase;
+        }
+
+        .kanji-name p { 
+            margin: 5px 0 0; 
+            color: #7f8c8d; 
+            font-size: 1.1rem; 
+        }
+
+        /* Thông tin On/Kun */
+        .info-section { margin-bottom: 30px; }
+        .info-row { 
+            display: flex; 
+            padding: 15px 0; 
+            border-bottom: 1px solid #f1f1f1; 
+        }
+        .info-label { 
+            width: 110px; 
+            font-weight: 700; 
+            color: #bdc3c7; 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+        }
+        .kana-text { 
+            font-size: 1.1rem; 
+            color: #e67e22; 
+            font-weight: 600; 
+        }
+
+        /* Nhóm 2 nút bấm điều hướng */
+        .action-group { 
+            display: flex; 
+            flex-direction: column;
+            gap: 15px; 
+        }
+        .action-group > a {
+            box-sizing: border-box;;
+        }
+
+        .btn-action { 
+            width: 100%;
+            border: none; 
+            padding: 16px; 
+            border-radius: 20px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            font-size: 1rem; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            color: white; 
+            text-decoration: none; 
+            font-family: 'Quicksand';
+        }
+
+        .btn-practice { 
+            background: var(--secondary-blue); 
+            box-shadow: 0 6px 15px rgba(93, 185, 255, 0.3);
+        }
+
+        .btn-writing { 
+            background: var(--primary-orange); 
+            box-shadow: 0 6px 15px rgba(241, 179, 76, 0.3);
+        }
+
+        .btn-action:hover { 
+            transform: translateY(-3px); 
+            filter: brightness(1.05); 
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <a href="n5.html" class="back-btn">← Quay lại danh sách</a>
+    <a href="javascript:history.back()" class="back-btn">← Quay lại</a>
     
-    <div id="content"></div>
+    <div id="content">
+        </div>
 
     <div class="action-group">
-        <button class="btn-action btn-practice" onclick="goToPage('practice.html')">📖 Hướng dẫn viết</button>
-        <button class="btn-action btn-writing" onclick="goToPage('writing.html')">✍️ Luyện viết</button>
+        <a id="link-practice" href="#" class="btn-action btn-practice">
+            📖 Hướng dẫn viết
+        </a>
+        <a id="link-writing" href="#" class="btn-action btn-writing">
+            ✍️ Luyện viết ngay
+        </a>
     </div>
 </div>
 
 <script>
+    // 1. Lấy ký tự Kanji từ URL (?k=日)
     const urlParams = new URLSearchParams(window.location.search);
     const char = urlParams.get('k');
 
+    // 2. Kiểm tra và hiển thị dữ liệu
     if (char && kanjiData[char]) {
         const data = kanjiData[char];
+        
+        // Cập nhật nội dung chi tiết
         document.getElementById('content').innerHTML = `
             <div class="header">
                 <div class="big-char">${char}</div>
@@ -55,16 +175,28 @@
                 </div>
             </div>
             <div class="info-section">
-                <div class="info-row"><div class="info-label">Onyomi</div><div class="kana-text">${data.on}</div></div>
-                <div class="info-row"><div class="info-label">Kunyomi</div><div class="kana-text">${data.kun}</div></div>
+                <div class="info-row">
+                    <div class="info-label">Onyomi</div>
+                    <div class="kana-text">${data.on || '---'}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Kunyomi</div>
+                    <div class="kana-text">${data.kun || '---'}</div>
+                </div>
             </div>
         `;
-    }
 
-    function goToPage(page) {
-        if (char) {
-            window.location.href = `${page}?k=${encodeURIComponent(char)}`;
-        }
+        // 3. Cập nhật đường dẫn cho 2 nút bấm
+        document.getElementById('link-practice').href = `practice.html?k=${encodeURIComponent(char)}`;
+        document.getElementById('link-writing').href = `writing.html?k=${encodeURIComponent(char)}`;
+    } else {
+        document.getElementById('content').innerHTML = `
+            <div style="text-align:center; padding: 50px 0;">
+                <h2>Chưa có dữ liệu</h2>
+                <p>Ký tự này hiện chưa được cập nhật thông tin.</p>
+            </div>
+        `;
+        document.querySelector('.action-group').style.display = 'none';
     }
 </script>
 </body>
