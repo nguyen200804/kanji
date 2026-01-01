@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách Kanji N5</title>
+    <title>Danh sách Kanji N5 - 14 Bài học</title>
     <link rel="stylesheet" href="../css/font.css">
     <style>
         :root { 
@@ -18,7 +18,7 @@
             margin: 0; padding: 20px; 
             color: var(--text-main); 
         }
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 900px; margin: 0 auto; }
         
         .back-nav { 
             margin-bottom: 20px; 
@@ -29,7 +29,6 @@
             font-weight: 600;
         }
 
-        /* Card bài học */
         .lesson-card { 
             background: white; 
             border-radius: 30px; 
@@ -45,7 +44,6 @@
         .lesson-header h2 { margin: 0; font-size: 1.4rem; }
         .lesson-header p { margin: 5px 0 0; color: var(--text-sub); font-size: 0.85rem; }
 
-        /* Grid chữ cái */
         .kanji-grid { 
             display: flex; 
             flex-wrap: wrap; 
@@ -53,7 +51,6 @@
             margin-bottom: 20px; 
         }
 
-        /* Ô chữ Kanji */
         .kanji-box { 
             background: white; 
             border: 1px solid #edf2f7; 
@@ -77,10 +74,9 @@
             margin-bottom: 8px; 
         }
 
-        /* Thanh tiến trình mini (Bước 20%) */
         .mini-p-container { 
             width: 80%; 
-            height: 5px; 
+            height: 6px; 
             background: #eee; 
             border-radius: 10px; 
             margin: 0 auto; 
@@ -89,10 +85,10 @@
         .mini-p-bar { 
             height: 100%; 
             background: var(--primary-orange); 
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            transition: width 0.4s ease; 
+            width: 0%;
         }
 
-        /* Nút ôn tập bài */
         .btn-review { 
             background: var(--primary-orange); 
             color: white; 
@@ -104,9 +100,7 @@
             float: right; 
             text-decoration: none; 
             font-size: 0.9rem; 
-            transition: 0.3s;
         }
-        .btn-review:hover { opacity: 0.9; transform: scale(1.03); }
         .clearfix::after { content: ""; clear: both; display: table; }
     </style>
 </head>
@@ -144,16 +138,14 @@
             let charsHtml = '';
 
             lesson.chars.forEach(char => {
-                // Lấy số lần luyện tập từ localStorage
                 const count = parseInt(localStorage.getItem(`count_${char}`) || 0);
-                // Tính phần trăm hiển thị theo bước 20% (cứ 2 lần viết tăng 1 bậc)
-                const displayPercent = Math.floor(count / 2) * 20;
+                const percent = Math.min(count * 20, 100);
 
                 charsHtml += `
                     <a href="detail.html?k=${encodeURIComponent(char)}" class="kanji-box">
                         <span class="kanji-char">${char}</span>
                         <div class="mini-p-container">
-                            <div class="mini-p-bar" style="width: ${Math.min(displayPercent, 100)}%"></div>
+                            <div class="mini-p-bar" style="width: ${percent}%"></div>
                         </div>
                     </a>`;
             });
@@ -172,7 +164,8 @@
         });
     }
 
-    window.onload = renderLessons;
+    // Sử dụng pageshow để cập nhật ngay khi nhấn nút "Xong" từ writing.html quay lại
+    window.addEventListener('pageshow', renderLessons);
 </script>
 </body>
 </html>

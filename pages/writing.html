@@ -2,170 +2,185 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Luyện viết Kanji</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện tập Kanji theo chu kỳ</title>
     <link rel="stylesheet" href="../css/font.css">
-    <script src="../data-kanji/data-n5.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
-        body { 
-            margin: 0; background: #f4f7f9; display: flex; flex-direction: column; 
-            align-items: center; min-height: 100vh; font-family: 'Quicksand', sans-serif; padding: 20px;
-        }
-
-        /* Nút Thoát */
-        .btn-exit {
-            position: absolute; top: 20px; left: 20px;
-            background: white; border: 1px solid #ddd; padding: 8px 15px;
-            border-radius: 10px; text-decoration: none; color: #666;
-            font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;
-            transition: all 0.2s; z-index: 100;
-        }
-        .btn-exit:hover { background: #fff0f0; color: #e74c3c; border-color: #fab1a0; }
-
-        #char-han-title { font-size: 2.2rem; font-weight: 700; color: #2c3e50; margin-top: 40px; margin-bottom: 5px; }
+        :root { --primary-orange: #f1b34c; --bg: #f8f9fa; }
+        body { font-family: 'Quicksand', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
-        /* Thanh tiến trình mới */
-        .progress-wrapper {
-            width: 100%; max-width: 320px; margin-bottom: 20px; text-align: center;
-        }
-        .progress-container {
-            width: 100%; height: 12px; background: #e0e6ed; border-radius: 10px;
-            overflow: hidden; margin-top: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .progress-bar {
-            width: 10%; height: 100%; background: linear-gradient(90deg, #edbb68, #f39c12);
-            border-radius: 10px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .mode-label { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .header { width: 100%; max-width: 500px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        .back-btn { text-decoration: none; color: #888; font-weight: 700; font-size: 0.9rem; }
+        .total-progress { background: var(--primary-orange); color: white; padding: 8px 18px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; }
 
-        .canvas-container { 
-            position: relative; background: white; padding: 15px; border-radius: 30px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+        .writing-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    box-sizing: border-box;
+}
+        
+        .mode-tag { display: inline-block; padding: 6px 16px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; margin-bottom: 12px; }
+        .mode-see { background: #e3f2fd; color: #1976d2; } 
+        .mode-remember { background: #fff3e0; color: #f57c00; } 
+
+        #cycle-count { font-size: 1rem; font-weight: 700; color: #2c3e50; margin-bottom: 20px; }
+
+        .step-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #edf2f7; transition: 0.4s; }
+        .dot.active { background: var(--primary-orange); transform: scale(1.4); }
+        .dot.done { background: #2ecc71; }
+
+        #target-svg { background: #fff; border-radius: 20px; cursor: crosshair; margin: 0 auto; }
+        
+        /* Nút Điều hướng */
+        .nav-controls { margin-top: 25px; min-height: 50px; }
+        .btn-nav { 
+            display: none; /* Ẩn mặc định, chỉ hiện khi viết xong 1 lượt */
+            border: none; 
+            padding: 12px 40px; 
+            border-radius: 15px; 
+            font-family: 'Quicksand'; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 1rem;
+            transition: 0.3s;
+            width: 100%;
         }
-        #kanji-target { width: 320px; height: 320px; }
-        
-        .bottom-toolbar { margin-top: 30px; display: flex; gap: 15px; }
-        .btn { padding: 12px 35px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; font-family: 'Quicksand'; transition: 0.3s; min-width: 140px; }
-        .btn-clear { background: #fff; color: #555; border: 1px solid #ddd; }
-        .btn-next { background: #edbb68; color: white; box-shadow: 0 4px 15px rgba(237, 187, 104, 0.4); }
-        .btn-next:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; box-shadow: none; }
-        
-        .success-msg { color: #27ae60; font-weight: 700; opacity: 0; transition: 0.3s; margin-top: 15px; }
-        .success-msg.show { opacity: 1; }
+        .btn-continue { background: var(--primary-orange); color: white; box-shadow: 0 4px 15px rgba(241, 179, 76, 0.3); }
+        .btn-finish { background: #2ecc71; color: white; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); }
+        .btn-nav:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        #msg { margin-top: 15px; font-weight: 700; min-height: 24px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <a href="#" onclick="confirmExit()" class="btn-exit">✕ Thoát</a>
-
-    <div id="char-han-title">...</div>
-    
-    <div class="progress-wrapper">
-        <div id="mode-text" class="mode-label">Đang hiện mẫu</div>
-        <div class="progress-container">
-            <div id="progress-bar" class="progress-bar"></div>
-        </div>
-        <div style="font-size: 0.8rem; margin-top: 5px; color: #94a3b8; font-weight: 600;">
-            Tiến độ: <span id="progress-text">1</span>/10
-        </div>
+    <div class="header">
+        <a href="javascript:history.back()" class="back-btn">← Thoát</a>
+        <div id="total-percent" class="total-progress">Tổng tiến độ: 0%</div>
     </div>
 
-    <div class="canvas-container">
-        <div id="kanji-target"></div>
-    </div>
+    <div class="writing-card">
+        <div id="mode-label" class="mode-tag mode-see">GIAI ĐOẠN: NHÌN MẪU</div>
+        <div id="cycle-count">Lượt viết: 1 / 10</div>
 
-    <div id="finish-msg" class="success-msg">🎉 Xuất sắc! Bạn đã thuộc chữ này.</div>
+        <div class="step-dots" id="step-dots"></div>
+        <div id="target-svg"></div>
+        
+        <div id="msg"></div>
 
-    <div class="bottom-toolbar">
-        <button class="btn btn-clear" id="resetBtn">Viết lại</button>
-        <button class="btn btn-next" id="nextBtn" disabled>Tiếp tục</button>
+        <div class="nav-controls">
+            <button id="btn-continue" class="btn-nav btn-continue" onclick="nextStep()">Tiếp tục</button>
+            <button id="btn-finish" class="btn-nav btn-finish" onclick="finishSession()">Xong</button>
+        </div>
     </div>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const char = urlParams.get('k') || '気';
-    let writeCount = 1;
-    const maxWrites = 10;
+    const char = urlParams.get('k') || '日';
+    let currentStep = 1; 
+    let writer;
 
-    const nextBtn = document.getElementById('nextBtn');
-    const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
-    const modeTextDisplay = document.getElementById('mode-text');
+    function init() {
+        const dotsContainer = document.getElementById('step-dots');
+        for (let i = 1; i <= 10; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.id = `dot-${i}`;
+            dotsContainer.appendChild(dot);
+        }
 
-    if (typeof kanjiData !== 'undefined' && kanjiData[char]) {
-        document.getElementById('char-han-title').innerText = kanjiData[char].hán;
+        writer = HanziWriter.create('target-svg', char, {
+            width: 280, height: 280, padding: 30,
+            showOutline: true,
+            strokeColor: '#2c3e50',
+            drawingColor: '#f1b34c',
+            drawingWidth: 20,
+            showCharacter: false
+        });
+
+        updateUI();
+        startQuizMode();
     }
 
-    function confirmExit() {
-        if (writeCount < maxWrites && confirm("Bạn chưa hoàn thành luyện tập. Bạn có chắc muốn thoát không?")) {
-            history.back();
-        } else if (writeCount >= maxWrites) {
-            history.back();
-        }
-    }
-
-    const writer = HanziWriter.create('kanji-target', char, {
-        width: 320, height: 320, padding: 25,
-        strokeColor: '#2c3e50', drawingColor: '#edbb68', drawingWidth: 15,
-        charDataLoader: function(char, onComplete) {
-            fetch(`https://raw.githubusercontent.com/chanind/hanzi-writer-data-jp/master/data/${char}.json`)
-                .then(res => res.ok ? res.json() : Promise.reject())
-                .then(onComplete)
-                .catch(() => {
-                    fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/${char}.json`)
-                        .then(res => res.json()).then(onComplete);
-                });
-        }
-    });
-
-    function setupQuiz() {
-        // Cập nhật thanh tiến trình
-        const percentage = (writeCount / maxWrites) * 100;
-        progressBar.style.width = percentage + "%";
-        progressText.innerText = writeCount;
+    function startQuizMode() {
+        const isMemoryMode = currentStep > 5;
+        writer.updateColor('outlineColor', isMemoryMode ? '#ffffff' : '#f3f3f3');
         
-        nextBtn.disabled = true;
-        
-        if (writeCount <= 5) {
-            modeTextDisplay.innerText = "Chế độ: Đồ theo mẫu";
-            modeTextDisplay.style.color = "#edbb68";
-            writer.updateColor('outlineColor', '#f0f0f0');
-            writer.showOutline();
-        } else {
-            modeTextDisplay.innerText = "Chế độ: Tự nhớ nét";
-            modeTextDisplay.style.color = "#e74c3c";
-            writer.hideOutline();
-        }
+        // Ẩn các nút điều hướng khi bắt đầu lượt viết mới
+        document.getElementById('btn-continue').style.display = 'none';
+        document.getElementById('btn-finish').style.display = 'none';
 
         writer.quiz({
-            onComplete: function() {
-                nextBtn.disabled = false;
-                if (writeCount === maxWrites) {
-                    nextBtn.innerText = "Hoàn thành";
-                    document.getElementById('finish-msg').classList.add('show');
-                } else {
-                    nextBtn.innerText = "Tiếp tục";
-                }
+            onComplete: function(summary) {
+                handleStepComplete();
             }
         });
     }
 
-    nextBtn.addEventListener('click', () => {
-        if (writeCount < maxWrites) {
-            writeCount++;
-            setupQuiz();
+    function handleStepComplete() {
+        document.getElementById(`dot-${currentStep}`).classList.add('done');
+        const msg = document.getElementById('msg');
+        
+        if (currentStep < 10) {
+            msg.innerHTML = "<span style='color: #2ecc71;'>Chính xác! Bấm tiếp tục để sang lượt mới.</span>";
+            document.getElementById('btn-continue').style.display = 'block';
         } else {
-            history.back();
+            msg.innerHTML = "<span style='color: #2ecc71;'>Hoàn thành chu kỳ! Bấm Xong để lưu tiến độ.</span>";
+            document.getElementById('btn-finish').style.display = 'block';
         }
-    });
+    }
 
-    document.getElementById('resetBtn').addEventListener('click', () => {
-        writer.quiz();
-        nextBtn.disabled = true;
-    });
+    function nextStep() {
+        currentStep++;
+        document.getElementById('msg').innerText = "";
+        updateUI();
+        startQuizMode();
+    }
 
-    window.onload = setupQuiz;
+    function finishSession() {
+        saveTotalProgress();
+        // Quay lại trang trước đó (detail.html hoặc n5.html)
+        history.back();
+    }
+
+    function saveTotalProgress() {
+        let totalCount = parseInt(localStorage.getItem(`count_${char}`) || 0);
+        if (totalCount < 5) {
+            totalCount++;
+            localStorage.setItem(`count_${char}`, totalCount);
+        }
+    }
+
+    function updateUI() {
+        document.getElementById('cycle-count').innerText = `Lượt viết: ${currentStep} / 10`;
+        const modeLabel = document.getElementById('mode-label');
+        
+        if (currentStep <= 5) {
+            modeLabel.innerText = "GIAI ĐOẠN: NHÌN MẪU";
+            modeLabel.className = "mode-tag mode-see";
+        } else {
+            modeLabel.innerText = "GIAI ĐOẠN: NHỚ CHỮ";
+            modeLabel.className = "mode-tag mode-remember";
+        }
+
+        document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+        const activeDot = document.getElementById(`dot-${currentStep}`);
+        if(activeDot) activeDot.classList.add('active');
+
+        const totalCount = parseInt(localStorage.getItem(`count_${char}`) || 0);
+        document.getElementById('total-percent').innerText = `Tổng tiến độ: ${totalCount * 20}%`;
+    }
+
+    window.onload = init;
 </script>
 </body>
 </html>
